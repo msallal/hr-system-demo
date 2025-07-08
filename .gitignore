@@ -1,0 +1,9 @@
+media/resumes/
+!media/resumes/.gitkeep
+.idea/
+.venv/
+db.sqlite3
+.env
+logs/*
+!logs/.gitkeep
+__pycache__/

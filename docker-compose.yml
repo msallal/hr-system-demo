@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:15
+    container_name: hr-database
+    environment:
+      POSTGRES_DB: hr
+      POSTGRES_USER: hr_admin
+      POSTGRES_PASSWORD: p@SSWord1
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - hr_network
+
+  web:
+    build: .
+    container_name: hr-django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: "1"
+      DB_NAME: "hr"
+      DB_USER: "hr_admin"
+      DB_PASSWORD: "p@SSWord1"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+    depends_on:
+      - db
+    networks:
+      - hr_network
+
+volumes:
+  postgres_data:
+
+networks:
+  hr_network:
+    driver: bridge
